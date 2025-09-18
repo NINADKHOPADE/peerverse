@@ -25,7 +25,7 @@ const Login = ({ onLogin, onSwitchToSignup, onForgotPassword }) => {
     setError('');
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      const apiBase = process.env.NODE_ENV === 'production' ? 'https://dream-nodejs-backend.vercel.app' : 'http://localhost:5000';
       const response = await axios.post(`${apiBase}/api/login`, formData);
       setUserId(response.data.userId);
       setShowOtpInput(true);
@@ -42,7 +42,7 @@ const Login = ({ onLogin, onSwitchToSignup, onForgotPassword }) => {
     setLoading(true);
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      const apiBase = process.env.NODE_ENV === 'production' ? 'https://dream-nodejs-backend.vercel.app' : 'http://localhost:5000';
       const response = await axios.post(`${apiBase}/api/verify-login`, {
         otp,
         userId
