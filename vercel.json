@@ -1,7 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "cd FRONTEND/frontone && npm install && npm run build",
-  "outputDirectory": "FRONTEND/frontone/build",
+  "builds": [
+    {
+      "src": "FRONTEND/frontone/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
