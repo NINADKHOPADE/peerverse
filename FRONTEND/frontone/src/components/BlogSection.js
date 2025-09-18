@@ -65,7 +65,8 @@ const BlogSection = ({ user, userRole }) => {
   const loadLikedBlogs = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/mentee/${user.id}/liked-blogs`, {
+      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      const response = await axios.get(`${apiBase}/api/mentee/${user.id}/liked-blogs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setLikedBlogs(response.data.likedBlogs || []);
@@ -79,7 +80,8 @@ const BlogSection = ({ user, userRole }) => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`http://localhost:5000/api/blogs/${blogId}/like`, {
+      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      const response = await axios.post(`${apiBase}/api/blogs/${blogId}/like`, {
         menteeId: user.id
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -104,7 +106,8 @@ const BlogSection = ({ user, userRole }) => {
   const loadComments = async (blogId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/blogs/${blogId}/comments`, {
+      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      const response = await axios.get(`${apiBase}/api/blogs/${blogId}/comments`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setComments(response.data.comments || []);
@@ -118,7 +121,8 @@ const BlogSection = ({ user, userRole }) => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:5000/api/blogs/${selectedBlog.id}/comments`, {
+      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      await axios.post(`${apiBase}/api/blogs/${selectedBlog.id}/comments`, {
         userId: user.id,
         content: newComment
       }, {
@@ -145,7 +149,8 @@ const BlogSection = ({ user, userRole }) => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:5000/api/blogs/${selectedBlog.id}/comments`, {
+      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      await axios.post(`${apiBase}/api/blogs/${selectedBlog.id}/comments`, {
         userId: user.id,
         content: replyText,
         parentCommentId
@@ -172,7 +177,8 @@ const BlogSection = ({ user, userRole }) => {
   const handleDeleteComment = async (commentId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/comments/${commentId}`, {
+      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+      await axios.delete(`${apiBase}/api/comments/${commentId}`, {
         data: { userId: user.id, userRole },
         headers: { Authorization: `Bearer ${token}` }
       });
