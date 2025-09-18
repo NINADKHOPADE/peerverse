@@ -18,7 +18,7 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Agora configuration
 const AGORA_APP_ID = '1646d8e04dfb4a4b803ce4acea826920';
@@ -1614,6 +1614,11 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Export for Vercel serverless functions
+if (process.env.NODE_ENV !== 'production') {
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
