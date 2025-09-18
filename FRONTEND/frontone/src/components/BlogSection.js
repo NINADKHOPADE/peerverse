@@ -29,10 +29,9 @@ const BlogSection = ({ user, userRole }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
       const url = userRole === 'mentor' 
-        ? `${apiBase}/api/blogs/mentor/${user.id}`
-        : `${apiBase}/api/blogs`;
+        ? `http://localhost:5000/api/blogs/mentor/${user.id}`
+        : 'http://localhost:5000/api/blogs';
       
       // Check localStorage cache first
       const cacheKey = `blogs_${userRole}_${user.id}`;
