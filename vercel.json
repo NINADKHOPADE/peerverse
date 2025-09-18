@@ -1,37 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "BACKEND/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "FRONTEND/frontone/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
+  "buildCommand": "cd FRONTEND/frontone && npm install && npm run build",
+  "outputDirectory": "FRONTEND/frontone/build",
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "BACKEND/server.js"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "FRONTEND/frontone/build/static/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg))",
-      "dest": "FRONTEND/frontone/build/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "FRONTEND/frontone/build/index.html"
+      "dest": "/index.html"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
