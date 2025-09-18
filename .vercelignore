@@ -1,0 +1,4 @@
+BACKEND/node_modules
+FRONTEND/frontone/node_modules
+*.log
+.env
