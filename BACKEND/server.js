@@ -5,19 +5,10 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
-const http = require('http');
-const socketIo = require('socket.io');
 const { RtcTokenBuilder, RtcRole } = require('agora-token');
 require('dotenv').config();
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: true,
-    methods: ["GET", "POST"]
-  }
-});
 const PORT = process.env.PORT || 3000;
 
 // Agora configuration
@@ -1322,13 +1313,7 @@ app.post('/api/video-call/request', async (req, res) => {
       [mentorId, 'call_request', 'Video Call Request', `${mentee.rows[0].username} wants to start a video call with you`, callSession.id, 'video_call']
     );
     
-    // Emit real-time notification to mentor
-    io.to(`user_${mentorId}`).emit('call_request', {
-      callId: callSession.id,
-      menteeId,
-      menteeName: mentee.rows[0].username,
-      channelName
-    });
+    // Real-time notification removed for Vercel compatibility
     
     res.json({ callId: callSession.id, message: 'Call request sent' });
   } catch (error) {
@@ -1360,11 +1345,7 @@ app.post('/api/video-call/:callId/accept', async (req, res) => {
     
     const callData = call.rows[0];
     
-    // Notify mentee that call was accepted
-    io.to(`user_${callData.mentee_id}`).emit('call_accepted', {
-      callId,
-      channelName: callData.channel_name
-    });
+    // Real-time notification removed for Vercel compatibility
     
     res.json({ message: 'Call accepted', channelName: callData.channel_name });
   } catch (error) {
@@ -1391,8 +1372,7 @@ app.post('/api/video-call/:callId/reject', async (req, res) => {
     );
     
     if (call.rows.length > 0) {
-      // Notify mentee that call was rejected
-      io.to(`user_${call.rows[0].mentee_id}`).emit('call_rejected', { callId });
+      // Real-time notification removed for Vercel compatibility
     }
     
     res.json({ message: 'Call rejected' });
@@ -1436,11 +1416,7 @@ app.post('/api/video-call/:callId/start', async (req, res) => {
     );
     
     if (call.rows.length > 0) {
-      // Notify both participants about session start
-      const sessionData = { callId, startTime: startTimestamp.toISOString() };
-      io.to(`call_${callId}`).emit('session_started', sessionData);
-      io.to(`user_${call.rows[0].mentee_id}`).emit('session_started', sessionData);
-      io.to(`user_${call.rows[0].mentor_id}`).emit('session_started', sessionData);
+      // Real-time notification removed for Vercel compatibility
     }
     
     // Schedule auto-end after 10 minutes
@@ -1455,10 +1431,7 @@ app.post('/api/video-call/:callId/start', async (req, res) => {
         if (result.rows.length > 0) {
           console.log(`[${new Date().toLocaleTimeString()}] Auto-ended call ${callId} - Session completed after 10 minutes`);
           
-          // Notify both participants that call ended
-          io.to(`user_${call.rows[0].mentee_id}`).emit('call_ended', { callId, reason: 'time_limit' });
-          io.to(`user_${call.rows[0].mentor_id}`).emit('call_ended', { callId, reason: 'time_limit' });
-          io.to(`call_${callId}`).emit('force_end_call', { callId, reason: 'time_limit' });
+          // Real-time notification removed for Vercel compatibility
         } else {
           console.log(`[${new Date().toLocaleTimeString()}] Call ${callId} was already ended`);
         }
@@ -1495,8 +1468,7 @@ app.post('/api/video-call/:callId/end', async (req, res) => {
     
     if (call.rows.length > 0) {
       const otherUserId = userId === call.rows[0].mentee_id ? call.rows[0].mentor_id : call.rows[0].mentee_id;
-      // Notify other participant that call ended
-      io.to(`user_${otherUserId}`).emit('call_ended', { callId, reason: 'user_ended' });
+      // Real-time notification removed for Vercel compatibility
     }
     
     res.json({ message: 'Call ended' });
@@ -1565,66 +1537,14 @@ app.delete('/api/video-call/:callId', async (req, res) => {
   }
 });
 
-// Socket.IO connection handling
-io.on('connection', (socket) => {
-  console.log(`[${new Date().toLocaleTimeString()}] Socket connected: ${socket.id}`);
-  
-  socket.on('join_user_room', (userId) => {
-    socket.join(`user_${userId}`);
-    console.log(`User ${userId} joined their room`);
-  });
-  
-  socket.on('join_call', (callId) => {
-    socket.join(`call_${callId}`);
-    console.log(`User joined call room: ${callId}`);
-  });
-  
-  socket.on('call_message', (data) => {
-    // Broadcast to all users in the call room including sender
-    io.to(`call_${data.callId}`).emit('call_message', data);
-  });
-  
-  socket.on('timer_sync', (data) => {
-    socket.to(`call_${data.callId}`).emit('timer_sync', data);
-  });
-  
-  socket.on('session_started', (data) => {
-    socket.to(`call_${data.callId}`).emit('session_started', data);
-  });
-  
-  socket.on('user_joined', (data) => {
-    socket.to(`call_${data.callId}`).emit('user_joined', data);
-  });
-  
-  socket.on('user_left', (data) => {
-    socket.to(`call_${data.callId}`).emit('user_left', data);
-  });
-  
-  socket.on('force_end_call', (data) => {
-    socket.to(`call_${data.callId}`).emit('force_end_call', data);
-  });
-  
-  socket.on('disconnect', () => {
-    console.log(`[${new Date().toLocaleTimeString()}] Socket disconnected: ${socket.id}`);
-  });
-  
-  socket.on('join_user_room', (userId) => {
-    console.log(`[${new Date().toLocaleTimeString()}] User ${userId} joined room: user_${userId}`);
-  });
-  
-  socket.on('join_call', (callId) => {
-    console.log(`[${new Date().toLocaleTimeString()}] User joined call room: call_${callId}`);
-  });
-});
+// Socket.IO removed for Vercel serverless compatibility
 
 // For Vercel serverless functions
 if (process.env.VERCEL !== '1') {
-  server.listen(PORT, () => {
+  app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
 
 // Export the Express app for Vercel
-module.exports = (req, res) => {
-  return app(req, res);
-};
+module.exports = app;
