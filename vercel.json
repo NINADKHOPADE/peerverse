@@ -19,8 +19,16 @@
       "dest": "BACKEND/server.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/static/(.*)",
+      "dest": "FRONTEND/frontone/build/static/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg))",
       "dest": "FRONTEND/frontone/build/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "FRONTEND/frontone/build/index.html"
     }
   ],
   "env": {
