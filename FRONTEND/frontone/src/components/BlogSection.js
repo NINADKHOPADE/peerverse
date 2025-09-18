@@ -29,7 +29,7 @@ const BlogSection = ({ user, userRole }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const apiBase = process.env.NODE_ENV === 'production' ? 'https://dream-nodejs-backend.vercel.app/api' : 'http://localhost:5000/api';
+      const apiBase = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:5000/api';
       const url = userRole === 'mentor' 
         ? `${apiBase}/blogs/mentor/${user.id}`
         : `${apiBase}/blogs`;
