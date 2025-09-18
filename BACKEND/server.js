@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? true : "http://localhost:3000",
+    origin: true,
     methods: ["GET", "POST"]
   }
 });
@@ -114,7 +114,10 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Apply rate limiter only to auth routes
@@ -1614,11 +1617,14 @@ io.on('connection', (socket) => {
   });
 });
 
-// Export for Vercel serverless functions
-if (process.env.NODE_ENV !== 'production') {
+// For Vercel serverless functions
+if (process.env.VERCEL !== '1') {
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
 
-module.exports = app;
+// Export the Express app for Vercel
+module.exports = (req, res) => {
+  return app(req, res);
+};
