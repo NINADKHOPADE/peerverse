@@ -25,8 +25,7 @@ const Login = ({ onLogin, onSwitchToSignup, onForgotPassword }) => {
     setError('');
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
-      const response = await axios.post(`${apiBase}/api/login`, formData);
+      const response = await axios.post('/api/login', formData);
       setUserId(response.data.userId);
       setShowOtpInput(true);
       setError('');
@@ -42,8 +41,7 @@ const Login = ({ onLogin, onSwitchToSignup, onForgotPassword }) => {
     setLoading(true);
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
-      const response = await axios.post(`${apiBase}/api/verify-login`, {
+      const response = await axios.post('/api/verify-login', {
         otp,
         userId
       });
