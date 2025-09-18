@@ -1,4 +1,6 @@
 {
+  "buildCommand": "cd FRONTEND/frontone && npm install && npm run build",
+  "outputDirectory": "FRONTEND/frontone/build",
   "rewrites": [
     {
       "source": "/(.*)",
