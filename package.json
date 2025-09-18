@@ -1,18 +1,11 @@
 {
-  "name": "dream-nodejs",
+  "name": "peerverse",
   "version": "1.0.0",
-  "description": "Mentoring platform with video calls",
-  "main": "BACKEND/server.js",
   "scripts": {
-    "build": "cd FRONTEND/frontone && npm install && npm run build",
-    "start": "cd BACKEND && npm start",
-    "dev": "concurrently \"cd BACKEND && npm run dev\" \"cd FRONTEND/frontone && npm start\"",
-    "install-all": "cd BACKEND && npm install && cd ../FRONTEND/frontone && npm install"
+    "build": "cd FRONTEND/frontone && npm install && npm run build && cp -r build/* ../../",
+    "start": "serve -s ."
   },
-  "keywords": ["mentoring", "video-calls", "nodejs", "react"],
-  "author": "Dream Team",
-  "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "serve": "^14.2.1"
   }
 }
