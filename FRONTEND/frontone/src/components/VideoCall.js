@@ -556,28 +556,23 @@ const VideoCall = ({ callId, user, onEndCall }) => {
     setIsJoined(false);
   };
   
-  const handleRejoinCall = async () => {
-    try {
-      // First cleanup existing connection
-      await cleanup();
-      
-      // Reset all states
-      setIsJoined(false);
-      setLocalAudioTrack(null);
-      setLocalVideoTrack(null);
-      setRemoteUsers([]);
-      setIsMuted(true);
-      setIsVideoOff(true);
-      setMessages([]);
-      
-      // Wait longer then reinitialize
-      setTimeout(() => {
-        initializeCall();
-      }, 3000);
-    } catch (error) {
-      console.error('Rejoin error:', error);
-    }
-  };
+  // const handleRejoinCall = async () => {
+  //   try {
+  //     await cleanup();
+  //     setIsJoined(false);
+  //     setLocalAudioTrack(null);
+  //     setLocalVideoTrack(null);
+  //     setRemoteUsers([]);
+  //     setIsMuted(true);
+  //     setIsVideoOff(true);
+  //     setMessages([]);
+  //     setTimeout(() => {
+  //       initializeCall();
+  //     }, 3000);
+  //   } catch (error) {
+  //     console.error('Rejoin error:', error);
+  //   }
+  // };
   
   const toggleRemoteAudio = (uid) => {
     setRemoteAudioMuted(prev => {
